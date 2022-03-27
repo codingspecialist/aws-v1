@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.metacoding'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// plain archive는 애플리케이션 실행에 필요한 모든 의존성을 포함하지 않고 작성된 소스코드의 클래스 파일과 리소스 파일만 포함한다.
+// 이렇게 생성된 *plain.jar 파일은 모든 의존성이 존재하는게 아니기 때문에 java -jar 명령어로 실행시 에러가 발생한다.
+// 아래 코드는 jar 빌드시에 plain.jar 파일이 생성되지 않게 해주는 코드이다.
+jar {
+	enabled = false 
+}
