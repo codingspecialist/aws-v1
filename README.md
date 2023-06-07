@@ -5,7 +5,7 @@
 - springweb
 - lombok
 
-### 배포 위치 EC2
+### 배포 위치 EC2 !
 
 ### 배포 방법
 - 로컬에서 github 업로드
