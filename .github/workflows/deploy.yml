@@ -1,0 +1,51 @@
+name: aws-v1
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: zulu
+      - name: Pemission
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: Show Current Time
+        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+#
+#      # EB에 CD 하기 위해 추가 작성
+#      - name: Generate deployment package
+#        run: |
+#          mkdir deploy
+#          cp build/libs/*.jar deploy/application.jar
+#          cp Procfile deploy/Procfile
+#          cp -r .ebextensions deploy/.ebextensions
+#          cd deploy && zip -r deploy.zip .
+#      - name: Deploy to EB
+#        uses: einaregilsson/beanstalk-deploy@v21
+#        with:
+#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+#          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+#          application_name: aws-v5-beanstalk # 엘리스틱 빈스톡 애플리케이션 이름!
+#          environment_name: Aws-v5-beanstalk-env # 엘리스틱 빈스톡 환경 이름!
+#          version_label: aws-v5-${{steps.current-time.outputs.formattedTime}}
+#          region: ap-northeast-2
+#          deployment_package: deploy/deploy.zip
